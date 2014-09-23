@@ -1,2 +1,4 @@
-# ignore the generatore .o files
+# ignore the generated .o files
 *.o
+# and the executable
+sim
