@@ -1,0 +1,8 @@
+10 second simulation, timestep = 0.01 s
+n_part  brute force   barnes-hut pypy    bh + pypy + pp (4 cpus)
+10      3 s           4 s        4 s     14 s 
+30      18 s          19 s       9 s     22 s
+100     146 s         79 s       27 s    29 s
+1000    8 h           16 m       5 m     99 s
+3000                  ~ 1 hr             200 s
+30k                              2.4 h

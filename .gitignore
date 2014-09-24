@@ -6,3 +6,5 @@ sim
 *.dat
 # and the images
 *.png
+# and the movies
+*.mp4
