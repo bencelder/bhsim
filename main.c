@@ -10,7 +10,7 @@
 
 double T  = 10.;
 double dT = 0.01;
-int steps_per_frame = 10;
+int fps = 24;
 
 typedef struct{
     double pos[2];
@@ -32,10 +32,9 @@ void init_particles(Particle* particles){
         theta = 2 * M_PI * rand_num();
         particles[i].pos[0] = r * cos(theta);
         particles[i].pos[1] = r * sin(theta);
-        particles[i].vel[0] = 0.1 * r * cos(theta);
-        particles[i].vel[1] = 0.1 * r * sin(theta);
+        //particles[i].vel[0] = 0.1 * r * cos(theta);
+        //particles[i].vel[1] = 0.1 * r * sin(theta);
     }
-    //printf("%f\n", rand_num());
 }
 
 void write_particles(Particle* particles, char* fname){
@@ -55,11 +54,21 @@ void force(Particle p1, Particle p2, double* f){
     // F = G m1 m2 r / r^3 
     // F = G m1 m2 r / (r + a)^3 
     // where a is a convergence term
-    //double a = 0.01;
-    //double r = 1;
+    double a = 0.01;
+    double G = 2e-3 / N_part;
+    double r[] = {0., 0.};
+    double r_mag;
+    vec_sub(p2.pos, p1.pos, r);
+    r_mag = vec_norm(r);
+    vec_mult(G / pow( r_mag + a, 3.), r, f);
 }
 
 int main(){
+    double seconds_per_frame = 1. / fps;
+    printf("%f\n", seconds_per_frame);
+    printf("%f\n", dT);
+    int steps_per_frame = seconds_per_frame / dT;
+    printf("%d\n", steps_per_frame);
     printf("Max int: %d\n", INT_MAX);
     printf("Size of Particle: %lu\n", sizeof(Particle));
 
@@ -77,21 +86,13 @@ int main(){
     init_particles(particles);
 
     //write_particles(particles, "data/start.dat");
-
-    //double pos[] = {0., 0.};
-    //double vel[] = {.1, .1};
-    //double temp1[N_dim];
-
-    //Particle p;
-    //vec_copy(vel, p.pos);
-    //vec_print(vel);
-    //vec_print(p.pos);
-
+    //
     int i = 0;
+    int ss_count = 0;
     int steps_since_frame = steps_per_frame;
     while (t < T){
 
-        /* advance */
+        /* advance the positions */
         int j;
         double temp[] = {0., 0.};
         for (j = 0; j < N_part; j++){
@@ -100,15 +101,30 @@ int main(){
         }
 
         /* update the velocities */
+        for (j = 0; j < N_part; j++){
+            double f[] = {0., 0.};
+            int k;
+            for (k = 0; k < N_part; k++){
+                // don't compute self-force
+                if (j == k) continue;
+
+                // get the force between these 2 particles
+                force(particles[j], particles[k], temp);
+                vec_add(f, temp, f);
+            }
+            vec_mult(dT, f, temp);
+            vec_add(particles[j].vel, temp, particles[j].vel);
+        }
+
 
         /* write the output */
         if (steps_since_frame >= steps_per_frame){
-            printf("%f\n", t);
             char savename[256];
-            sprintf(savename, "data/%05d.dat", i);
+            sprintf(savename, "data/%05d.dat", ss_count);
             printf("%s\n", savename);
             write_particles(particles, savename);
 
+            ss_count++;
             steps_since_frame = 0;
         }
         steps_since_frame++;

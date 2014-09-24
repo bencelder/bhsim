@@ -1,4 +1,7 @@
+#include<math.h>
+
 #include "vec.h"
+
 
 extern int N_dim;
 
@@ -27,7 +30,7 @@ double vec_dot(double* a, double* b){
 }
 
 double vec_norm(double* a){
-    return vec_dot(a, a);
+    return sqrt(vec_dot(a, a));
 }
 
 void vec_copy(double* a, double* b){
@@ -45,7 +48,9 @@ void vec_mult(double a, double* b, double* c){
 }
 
 double vec_dist(double* a, double* b){
-    double* temp;
+    double temp[] = {0., 0.};
+    vec_sub(a, b, temp);
+    return vec_norm(temp);
 }
 
 void vec_print(double* a){

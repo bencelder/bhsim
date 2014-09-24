@@ -20,3 +20,5 @@ vec.o: vec.c params.h
 
 clean:
 	rm -rf *.o sim
+	rm data/*.dat
+	rm images/*.png
