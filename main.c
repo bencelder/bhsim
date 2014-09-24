@@ -2,6 +2,7 @@
 #include<time.h>
 #include<stdlib.h>
 #include<limits.h>
+#include<math.h>
 
 #include "params.h"
 #include "vec.h"
@@ -23,11 +24,13 @@ double rand_num(){
 }
 
 void init_particles(Particle* particles){
-    //double r, theta;
+    double r, theta;
     int i;
     for (i = 0; i < N_part; i++){
-        particles[i].pos[0] = rand_num();
-        particles[i].pos[1] = rand_num();
+        r = 0.8 * rand_num();
+        theta = 2 * M_PI * rand_num();
+        particles[i].pos[0] = r * cos(theta);
+        particles[i].pos[1] = r * sin(theta);
     }
     //printf("%f\n", rand_num());
 }
@@ -39,6 +42,7 @@ void write_particles(Particle* particles, char* fname){
     fp = fopen(fname, "w+");
     for (i = 0; i < N_part; i++){
         vec_write(particles[i].pos, fp);
+        //vec_write(particles[i].vel, fp);
         fprintf(fp, "\n");
     }
     fclose(fp);
@@ -61,8 +65,7 @@ int main(){
 
     init_particles(particles);
 
-    write_particles(particles, "data/start.dat");
-    write_particles(particles, "ima/start.dat");
+    //write_particles(particles, "data/start.dat");
 
     //double pos[] = {0., 0.};
     //double vel[] = {.1, .1};
@@ -73,12 +76,20 @@ int main(){
     //vec_print(vel);
     //vec_print(p.pos);
 
+    int i = 0;
     while (t < T){
+        printf("%f\n", t);
+        char savename[256];
+        sprintf(savename, "data/%05d.dat", i);
+        printf("%s\n", savename);
+
         /* advance */
         //vec_mult(dT, vel, temp1);
         //vec_add(pos, temp1, pos);
+        write_particles(particles, savename);
 
         //vec_print(pos);
         t += dT;
+        i ++;
     }
 }

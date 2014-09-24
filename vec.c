@@ -53,5 +53,5 @@ void vec_write(double* a, FILE* fp){
     for (i = 0; i < N_dim; i++){
         fprintf(fp, "%f\t", a[i]);
     }
-    printf("\n");
+    //printf("\n");
 }
