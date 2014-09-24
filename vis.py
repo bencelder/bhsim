@@ -61,6 +61,7 @@ for i in range(0, n_snapshots):
             if event.key == pygame.K_ESCAPE: sys.exit()
 
     fname = files[i]
+    print fname
     savename =  'images' + fname[4:-3] + 'png'
 
     if not os.path.exists(savename):

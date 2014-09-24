@@ -26,6 +26,10 @@ double vec_dot(double* a, double* b){
     return c;
 }
 
+double vec_norm(double* a){
+    return vec_dot(a, a);
+}
+
 void vec_copy(double* a, double* b){
     int i;
     for (i = 0; i < N_dim; i++){
@@ -38,6 +42,10 @@ void vec_mult(double a, double* b, double* c){
     for (i = 0; i < N_dim; i++){
         c[i] = a * b[i];
     }
+}
+
+double vec_dist(double* a, double* b){
+    double* temp;
 }
 
 void vec_print(double* a){

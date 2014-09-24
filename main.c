@@ -8,8 +8,9 @@
 #include "vec.h"
 
 
-double T  = 1.;
-double dT = 0.1;
+double T  = 10.;
+double dT = 0.01;
+int steps_per_frame = 10;
 
 typedef struct{
     double pos[2];
@@ -31,6 +32,8 @@ void init_particles(Particle* particles){
         theta = 2 * M_PI * rand_num();
         particles[i].pos[0] = r * cos(theta);
         particles[i].pos[1] = r * sin(theta);
+        particles[i].vel[0] = 0.1 * r * cos(theta);
+        particles[i].vel[1] = 0.1 * r * sin(theta);
     }
     //printf("%f\n", rand_num());
 }
@@ -46,6 +49,14 @@ void write_particles(Particle* particles, char* fname){
         fprintf(fp, "\n");
     }
     fclose(fp);
+}
+
+void force(Particle p1, Particle p2, double* f){
+    // F = G m1 m2 r / r^3 
+    // F = G m1 m2 r / (r + a)^3 
+    // where a is a convergence term
+    //double a = 0.01;
+    //double r = 1;
 }
 
 int main(){
@@ -77,18 +88,31 @@ int main(){
     //vec_print(p.pos);
 
     int i = 0;
+    int steps_since_frame = steps_per_frame;
     while (t < T){
-        printf("%f\n", t);
-        char savename[256];
-        sprintf(savename, "data/%05d.dat", i);
-        printf("%s\n", savename);
 
         /* advance */
-        //vec_mult(dT, vel, temp1);
-        //vec_add(pos, temp1, pos);
-        write_particles(particles, savename);
+        int j;
+        double temp[] = {0., 0.};
+        for (j = 0; j < N_part; j++){
+            vec_mult(dT, particles[j].vel, temp);
+            vec_add(particles[j].pos, temp, particles[j].pos);
+        }
 
-        //vec_print(pos);
+        /* update the velocities */
+
+        /* write the output */
+        if (steps_since_frame >= steps_per_frame){
+            printf("%f\n", t);
+            char savename[256];
+            sprintf(savename, "data/%05d.dat", i);
+            printf("%s\n", savename);
+            write_particles(particles, savename);
+
+            steps_since_frame = 0;
+        }
+        steps_since_frame++;
+
         t += dT;
         i ++;
     }

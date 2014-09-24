@@ -15,7 +15,7 @@ void vec_unit(double* a, double* b);
 // c = a*b
 void vec_mult(double a, double* b, double* c);
 // c = | a - b |
-double vec_dist(double a, double* b);
+double vec_dist(double* a, double* b);
 
 
 void vec_print(double* a);
