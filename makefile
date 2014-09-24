@@ -12,10 +12,10 @@ all: sim
 sim: main.o vec.o
 	$(CC) main.o vec.o -o sim
 
-main.o: main.c
+main.o: main.c params.h
 	$(CC) $(CFlags) main.c
 
-vec.o: vec.c
+vec.o: vec.c params.h
 	$(CC) $(CFlags) vec.c
 
 clean:

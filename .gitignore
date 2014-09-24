@@ -2,3 +2,5 @@
 *.o
 # and the executable
 sim
+# and the data
+*.dat
