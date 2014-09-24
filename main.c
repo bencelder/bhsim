@@ -24,22 +24,19 @@ double rand_num(){
 
 void init_particles(Particle* particles){
     //double r, theta;
-    Particle p;
-    
     int i;
     for (i = 0; i < N_part; i++){
-        p = particles[i];
         particles[i].pos[0] = rand_num();
         particles[i].pos[1] = rand_num();
     }
     //printf("%f\n", rand_num());
 }
 
-void write_particles(Particle* particles){
+void write_particles(Particle* particles, char* fname){
     //Particle p;
     int i;
     FILE* fp;
-    fp = fopen("data/start.dat", "w+");
+    fp = fopen(fname, "w+");
     for (i = 0; i < N_part; i++){
         vec_write(particles[i].pos, fp);
         fprintf(fp, "\n");
@@ -64,7 +61,8 @@ int main(){
 
     init_particles(particles);
 
-    write_particles(particles);
+    write_particles(particles, "data/start.dat");
+    write_particles(particles, "ima/start.dat");
 
     //double pos[] = {0., 0.};
     //double vel[] = {.1, .1};
