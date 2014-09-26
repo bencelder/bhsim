@@ -41,3 +41,25 @@ Quad quad_SE(Quad q){
     q2 = quad_init( newlength, new_corner, q2 );
     return q2;
 }
+
+Quad quad_NW(Quad q){
+    double newlength = q.length / 2.;
+    double offset[] = { 0., newlength };
+    double new_corner[] = {0., 0.};
+    vec_add( q.LL_corner, offset, new_corner );
+
+    Quad q2;
+    q2 = quad_init( newlength, new_corner, q2 );
+    return q2;
+}
+
+Quad quad_NE(Quad q){
+    double newlength = q.length / 2.;
+    double offset[] = { newlength, newlength };
+    double new_corner[] = {0., 0.};
+    vec_add( q.LL_corner, offset, new_corner );
+
+    Quad q2;
+    q2 = quad_init( newlength, new_corner, q2 );
+    return q2;
+}

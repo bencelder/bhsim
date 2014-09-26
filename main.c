@@ -14,14 +14,6 @@ double T  = 10.;
 double dT = 0.01;
 int fps = 24;
 
-/*
-typedef struct{
-    double pos[2];
-    double vel[2];
-    double mass;
-}Particle;
-*/
-
 /* Returns a random double in the range [0, 1) */
 double rand_num(){
     int r = rand();
@@ -78,6 +70,22 @@ int main(){
     Quad SW;
     SW = quad_SW(quad);
     quad_print(SW);
+
+    printf("NW Corner:\n");
+    Quad NW;
+    NW = quad_NW(quad);
+    quad_print(NW);
+
+    printf("NE Corner:\n");
+    Quad NE;
+    NE = quad_NE(quad);
+    quad_print(NE);
+
+    printf("NENE Corner:\n");
+    Quad NENE;
+    NENE = quad_NE(NE);
+    quad_print(NENE);
+
     
     double seconds_per_frame = 1. / fps;
     int steps_per_frame = seconds_per_frame / dT;
@@ -134,7 +142,7 @@ int main(){
         if (steps_since_frame >= steps_per_frame){
             char savename[256];
             sprintf(savename, "data/%05d.dat", ss_count);
-            printf("%s\n", savename);
+            //printf("%s\n", savename);
             write_particles(particles, savename);
 
             ss_count++;
