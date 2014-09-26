@@ -1,4 +1,15 @@
+to time the simulation, run "time ./sim"
 10 second simulation, timestep = 0.01 s
+n_part  brute force -O3   barnes-hut pypy
+10
+30
+100     1 s
+1000    128 s       89 s
+2000    9 m
+
+# the C code is a factor of ~200 faster!!
+
+python version of the simulation:
 n_part  brute force   barnes-hut pypy    bh + pypy + pp (4 cpus)
 10      3 s           4 s        4 s     14 s 
 30      18 s          19 s       9 s     22 s

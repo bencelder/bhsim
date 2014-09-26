@@ -2,7 +2,6 @@
 
 #include "vec.h"
 
-
 extern int N_dim;
 
 void vec_add(double* a, double* b, double* c){

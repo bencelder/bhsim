@@ -5,17 +5,22 @@
 #include<math.h>
 
 #include "params.h"
+#include "main.h"
 #include "vec.h"
+#include "bhtree.h"
 
 
 double T  = 10.;
 double dT = 0.01;
 int fps = 24;
 
+/*
 typedef struct{
     double pos[2];
     double vel[2];
+    double mass;
 }Particle;
+*/
 
 /* Returns a random double in the range [0, 1) */
 double rand_num(){
@@ -64,24 +69,31 @@ void force(Particle p1, Particle p2, double* f){
 }
 
 int main(){
+    Quad quad;
+    double t2[] = {0., 0.};
+    quad = quad_init(1., t2, quad);
+    quad_print(quad);
+
+    printf("SW Corner:\n");
+    Quad SW;
+    SW = quad_SW(quad);
+    quad_print(SW);
+    
     double seconds_per_frame = 1. / fps;
-    printf("%f\n", seconds_per_frame);
-    printf("%f\n", dT);
     int steps_per_frame = seconds_per_frame / dT;
-    printf("%d\n", steps_per_frame);
-    printf("Max int: %d\n", INT_MAX);
-    printf("Size of Particle: %lu\n", sizeof(Particle));
 
     // init random number generator
     //srand(1);
     srand(time(NULL));
-    float t = 0;
+    
     /* Initialize the particles */
     Particle* particles;
-    //Particle particles[N_part];
+    // malloc puts the particle on the heap
     particles = malloc( N_part * sizeof(Particle) );
 
-    printf("Size of Particles array: %lu\n", sizeof(particles));
+    printf("%lu b \t per particle\n", sizeof(Particle));
+    printf("%lu kb \t total memory usage\n",
+            N_part * sizeof(Particle) / 1024);
 
     init_particles(particles);
 
@@ -90,6 +102,7 @@ int main(){
     int i = 0;
     int ss_count = 0;
     int steps_since_frame = steps_per_frame;
+    double t = 0;
     while (t < T){
 
         /* advance the positions */
