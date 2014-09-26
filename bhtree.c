@@ -8,8 +8,6 @@ Quad quad_init(double length, double* LL_corner, Quad quad){
 }
 
 bool quad_contains(double* vec, Quad quad){
-    //vec_print(vec);
-    //vec_print(quad.LL_corner);
     // optmization: check one at a time
     if (    vec[0] >= quad.LL_corner[0] &&
             vec[0] <  quad.LL_corner[0] + quad.length &&
@@ -62,4 +60,26 @@ Quad quad_NE(Quad q){
     Quad q2;
     q2 = quad_init( newlength, new_corner, q2 );
     return q2;
+}
+
+bool particle_in(Particle p, Quad q){
+    return quad_contains(p.pos, q);
+}
+
+void particle_print( Particle p ){
+    vec_print(p.pos);
+    printf("%f\n", p.mass);
+}
+
+Particle particle_add(Particle p1, Particle p2){
+    Particle p3;
+    vec_add( p1.pos, p2.pos, p3.pos );
+    p3.mass = p1.mass + p2.mass;
+    return p3;
+}
+
+void bhtree_print(BHTree bht){
+    particle_print( bht.body );
+    quad_print( bht.quad );
+    // print children?
 }

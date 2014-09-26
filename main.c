@@ -29,6 +29,7 @@ void init_particles(Particle* particles){
         theta = 2 * M_PI * rand_num();
         particles[i].pos[0] = r * cos(theta);
         particles[i].pos[1] = r * sin(theta);
+        particles[i].mass   = 1.;
         //particles[i].vel[0] = 0.1 * r * cos(theta);
         //particles[i].vel[1] = 0.1 * r * sin(theta);
     }
@@ -57,34 +58,54 @@ void force(Particle p1, Particle p2, double* f){
     double r_mag;
     vec_sub(p2.pos, p1.pos, r);
     r_mag = vec_norm(r);
-    vec_mult(G / pow( r_mag + a, 3.), r, f);
+    vec_mult(G * p1.mass * p2.mass / pow( r_mag + a, 3.), r, f);
 }
 
 int main(){
+    Particle p1;
+    p1.pos[0] = 0.3;
+    p1.pos[1] = 0.8;
+    p1.mass   = 1.;
+    printf("Test particle:\n");
+    particle_print(p1);
+
     Quad quad;
     double t2[] = {0., 0.};
     quad = quad_init(1., t2, quad);
     quad_print(quad);
+    printf("%d\n", particle_in( p1, quad ));
 
     printf("SW Corner:\n");
     Quad SW;
     SW = quad_SW(quad);
     quad_print(SW);
+    printf("%d\n", particle_in( p1, SW ));
 
     printf("NW Corner:\n");
     Quad NW;
     NW = quad_NW(quad);
     quad_print(NW);
+    printf("%d\n", particle_in( p1, NW ));
 
     printf("NE Corner:\n");
     Quad NE;
     NE = quad_NE(quad);
     quad_print(NE);
+    printf("%d\n", particle_in( p1, NE ));
 
     printf("NENE Corner:\n");
     Quad NENE;
     NENE = quad_NE(NE);
     quad_print(NENE);
+    printf("%d\n", particle_in( p1, NENE ));
+
+
+    Particle p3 = particle_add( p1, p1 );
+    particle_print(p3);
+
+    printf("Printing BHT:\n");
+    BHTree bht;
+    bhtree_print( bht );
 
     
     double seconds_per_frame = 1. / fps;
