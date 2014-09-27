@@ -11,9 +11,10 @@ typedef struct{
     double LL_corner[2];
 }Quad;
 
-typedef struct{
+typedef struct BHTree {
     Particle body;
     Quad     quad;
+    bool     is_leaf;
     struct BHTree* NW;
     struct BHTree* NE;
     struct BHTree* SW;
@@ -38,4 +39,5 @@ Particle particle_add(Particle p1, Particle p2);
 
 void bhtree_print(BHTree);
 // New BH-Tree with no bodies, representing the quadrant.
-BHTree* bhtree_new(Quad q);
+BHTree bhtree_new(Quad q);
+void bhtree_insert(Particle p, BHTree* bht);

@@ -2,6 +2,8 @@
 *.o
 # and the executable
 sim
+# and the swap files
+*.swp
 # and the data
 *.dat
 # and the images

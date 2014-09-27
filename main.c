@@ -70,8 +70,8 @@ int main(){
     particle_print(p1);
 
     Quad quad;
-    double t2[] = {0., 0.};
-    quad = quad_init(1., t2, quad);
+    double t2[] = {-1., -1.};
+    quad = quad_init(2., t2, quad);
     quad_print(quad);
     printf("%d\n", particle_in( p1, quad ));
 
@@ -100,12 +100,27 @@ int main(){
     printf("%d\n", particle_in( p1, NENE ));
 
 
-    Particle p3 = particle_add( p1, p1 );
-    particle_print(p3);
-
     printf("Printing BHT:\n");
-    BHTree bht;
+    BHTree bht = bhtree_new( quad );
     bhtree_print( bht );
+
+    bhtree_print( bht );
+
+    bhtree_insert( p1, &bht );
+
+    bhtree_print( bht );
+    
+    Particle p2;
+    p2.pos[0] = -0.3;
+    p2.pos[1] = -0.8;
+    p2.mass   = 1.;
+
+    bhtree_insert( p2, &bht );
+
+    bhtree_print( bht );
+
+
+    printf("Done with tests.\n");
 
     
     double seconds_per_frame = 1. / fps;

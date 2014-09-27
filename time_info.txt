@@ -1,6 +1,7 @@
-to time the simulation, run "time ./sim"
+To time the simulation, run "time ./sim"
 10 second simulation, timestep = 0.01 s
-n_part  brute force -O3   barnes-hut pypy
+
+n_part  brute force flag -O3
 10
 30
 100     1 s
