@@ -7,12 +7,15 @@ CC = gcc
 #  -S outputs assembly code in .s files
 CFlags=-c -Wall
 
+# target: dependencies
+#
 # not sure what this line does
 #all: sim
 
-# target: dependencies
+# the -lm tells it explicitly to link the math library
+# (needed on ubuntu)
 sim: main.o vec.o bhtree.o
-	$(CC) main.o vec.o bhtree.o -o sim
+	$(CC) main.o vec.o bhtree.o -o sim -lm
 
 main.o: main.c params.h bhtree.h main.h
 	$(CC) $(CFlags) main.c
