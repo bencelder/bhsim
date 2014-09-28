@@ -68,12 +68,22 @@ void build_bht(Particle* particles, BHTree* bht){
     }
 }
 
-void bht_net_force(Particle p, BHTree* bht){
+/*
+double* bht_net_force(Particle p, BHTree* bht){
+    double f[] = {0., 0.};
     double theta = 0.5;
     double s_over_d;
+    double distance;
+
+    // if node hasn't been initialized, return a blank force
     printf("%f\n", bht->body.mass);
+    // idea for speedup: use the square of the distance instead
+    //distance = vec_distance(p.pos, bht->body
+    // if the node is far away
     
+    return f;
 }
+*/
 
 void brute_net_force(Particle p, Particle* particles, double* f){
     int k;
@@ -131,10 +141,10 @@ int main(){
         }
 
         /* update the velocities */
-
         for (j = 0; j < N_part; j++){
             double f[] = {0., 0.};
             brute_net_force(particles[j], particles, f);
+            //bht_net_force(particles[j], &bht, f);
             vec_mult(dT, f, temp);
             vec_add(particles[j].vel, temp, particles[j].vel);
         }
