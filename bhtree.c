@@ -66,6 +66,17 @@ bool particle_in(Particle p, Quad q){
     return quad_contains(p.pos, q);
 }
 
+bool particle_equal(Particle p, Particle q){
+    if (p.mass == q.mass &&
+        p.pos[0] == q.pos[0] &&
+        p.pos[1] == q.pos[1]){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 void particle_print( Particle p ){
     printf("Particle position: \t");
     vec_print(p.pos);
@@ -92,8 +103,8 @@ Particle particle_add(Particle p1, Particle p2){
 void bhtree_print(BHTree bht){
     printf("Particle in BHT:\n");
     particle_print( bht.body );
-    printf("Quad in BHT:\n");
-    quad_print( bht.quad );
+    //printf("Quad in BHT:\n");
+    //quad_print( bht.quad );
     // print children?
 }
 
@@ -105,17 +116,67 @@ BHTree bhtree_new(Quad q){
     return bht;
 }
 
+void bhtree_put_into_correct_quad(Particle p, BHTree* bht){
+    //Quad SW;
+    //SW = bht->SW->quad;
+    if (quad_contains(p.pos, bht->SW->quad)){
+        //printf("SW!\n");
+        bhtree_insert(p, bht->SW);
+    }
+    else if (quad_contains(p.pos, bht->NW->quad)){
+        //printf("NW!\n");
+        bhtree_insert(p, bht->NW);
+    }
+    else if (quad_contains(p.pos, bht->NE->quad)){
+        //printf("NE!\n");
+        bhtree_insert(p, bht->NE);
+    }
+    else if (quad_contains(p.pos, bht->SE->quad)){
+        //printf("SE!\n");
+        bhtree_insert(p, bht->SE);
+    }
+}
+
 void bhtree_insert(Particle p, BHTree* bht){
     double m = bht->body.mass;
     // if there are no particles
     if (m == 0.){
+        //printf("No particles in bht!\n");
         // put this particle in
         bht->body = p;
     }
-    // if it's a leaf
+    // if it's an internal node
+    else if (bht->is_leaf == false){
+        //printf("It's an internal node!\n");
+        // update the COM and total mass
+        bht->body = particle_add(p, bht->body);
+        // put the particle into the correct quadrant
+        bhtree_put_into_correct_quad(p, bht);
+    }
+    // if it's an external node
     else if (bht->is_leaf == true){
+        //printf("It's a leaf!\n");
+        // if it's a leaf, then bht->body represents
+        // a single particle.  We'll initialize the 
+        // quadrants and then insert both into the 
+        // correct one(s).
+
         // initialize the four quadrants
         BHTree SW = bhtree_new( quad_SW( bht->quad ) );
         bht->SW = &SW;
+        BHTree NW = bhtree_new( quad_NW( bht->quad ) );
+        bht->NW = &NW;
+        BHTree NE = bhtree_new( quad_NE( bht->quad ) );
+        bht->NE = &NE;
+        BHTree SE = bhtree_new( quad_SE( bht->quad ) );
+        bht->SE = &SE;
+
+        // put the two particles into the correct node(s)
+        bhtree_put_into_correct_quad(p, bht);
+        bhtree_put_into_correct_quad(bht->body, bht);
+
+        // update the COM and mass info
+        bht->body = particle_add(p, bht->body);
+        bht->is_leaf = false;
     }
 }

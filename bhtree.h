@@ -34,6 +34,8 @@ Quad quad_NE(Quad q);
 
 void particle_print( Particle p );
 
+bool particle_equal(Particle p, Particle q);
+
 bool particle_in(Particle p, Quad q);
 Particle particle_add(Particle p1, Particle p2);
 

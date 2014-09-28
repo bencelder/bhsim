@@ -61,68 +61,34 @@ void force(Particle p1, Particle p2, double* f){
     vec_mult(G * p1.mass * p2.mass / pow( r_mag + a, 3.), r, f);
 }
 
+void build_bht(Particle* particles, BHTree* bht){
+    int i;
+    for (i = 0; i < N_part; i++){
+        bhtree_insert(particles[i], bht);
+    }
+}
+
+void bht_net_force(Particle p, BHTree* bht){
+    double theta = 0.5;
+    double s_over_d;
+    printf("%f\n", bht->body.mass);
+    
+}
+
+void brute_net_force(Particle p, Particle* particles, double* f){
+    int k;
+    double temp[] = {0., 0.};
+    for (k = 0; k < N_part; k++){
+        // don't compute self-force
+        if (particle_equal(p, particles[k])) continue;
+
+        // get the force between these 2 particles
+        force(p, particles[k], temp);
+        vec_add(f, temp, f);
+    }
+}
+
 int main(){
-    Particle p1;
-    p1.pos[0] = 0.3;
-    p1.pos[1] = 0.8;
-    p1.mass   = 1.;
-    printf("Test particle:\n");
-    particle_print(p1);
-
-    Quad quad;
-    double t2[] = {-1., -1.};
-    quad = quad_init(2., t2, quad);
-    quad_print(quad);
-    printf("%d\n", particle_in( p1, quad ));
-
-    printf("SW Corner:\n");
-    Quad SW;
-    SW = quad_SW(quad);
-    quad_print(SW);
-    printf("%d\n", particle_in( p1, SW ));
-
-    printf("NW Corner:\n");
-    Quad NW;
-    NW = quad_NW(quad);
-    quad_print(NW);
-    printf("%d\n", particle_in( p1, NW ));
-
-    printf("NE Corner:\n");
-    Quad NE;
-    NE = quad_NE(quad);
-    quad_print(NE);
-    printf("%d\n", particle_in( p1, NE ));
-
-    printf("NENE Corner:\n");
-    Quad NENE;
-    NENE = quad_NE(NE);
-    quad_print(NENE);
-    printf("%d\n", particle_in( p1, NENE ));
-
-
-    printf("Printing BHT:\n");
-    BHTree bht = bhtree_new( quad );
-    bhtree_print( bht );
-
-    bhtree_print( bht );
-
-    bhtree_insert( p1, &bht );
-
-    bhtree_print( bht );
-    
-    Particle p2;
-    p2.pos[0] = -0.3;
-    p2.pos[1] = -0.8;
-    p2.mass   = 1.;
-
-    bhtree_insert( p2, &bht );
-
-    bhtree_print( bht );
-
-
-    printf("Done with tests.\n");
-
-    
     double seconds_per_frame = 1. / fps;
     int steps_per_frame = seconds_per_frame / dT;
 
@@ -142,12 +108,19 @@ int main(){
     init_particles(particles);
 
     //write_particles(particles, "data/start.dat");
-    //
     int i = 0;
     int ss_count = 0;
     int steps_since_frame = steps_per_frame;
     double t = 0;
     while (t < T){
+
+        // build the Barnes-Hut tree
+        Quad anchor;
+        double anchor_coords[] = {-1., -1.};
+        anchor = quad_init(2., anchor_coords, anchor);
+
+        BHTree bht = bhtree_new( anchor );
+        build_bht(particles, &bht);
 
         /* advance the positions */
         int j;
@@ -158,17 +131,10 @@ int main(){
         }
 
         /* update the velocities */
+
         for (j = 0; j < N_part; j++){
             double f[] = {0., 0.};
-            int k;
-            for (k = 0; k < N_part; k++){
-                // don't compute self-force
-                if (j == k) continue;
-
-                // get the force between these 2 particles
-                force(particles[j], particles[k], temp);
-                vec_add(f, temp, f);
-            }
+            brute_net_force(particles[j], particles, f);
             vec_mult(dT, f, temp);
             vec_add(particles[j].vel, temp, particles[j].vel);
         }
