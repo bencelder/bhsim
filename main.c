@@ -103,6 +103,14 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     }
 }
 
+void bhtree_free(BHTree* bht){
+    if (bht->SW != NULL) bhtree_free(bht->SW);
+    if (bht->NW != NULL) bhtree_free(bht->NW);
+    if (bht->NE != NULL) bhtree_free(bht->NE);
+    if (bht->SE != NULL) bhtree_free(bht->SE);
+    free(bht);
+}
+
 void brute_net_force(Particle p, Particle* particles, double* f){
     int k;
     double temp[] = {0., 0.};
@@ -214,7 +222,7 @@ int main(){
         //printf("Done with step.\n");
 
         // clear the BH tree
-        //free(bht);
+        bhtree_free(bht);
     }
     return 0;
 }
