@@ -73,23 +73,14 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     double distance;
     double temp[] = {0., 0.};
 
-    //vec_print(p.pos);
-
     // if node doesn't contain a body,
     if (bht->body.mass == 0.){
-        //printf("Unitialized! Skipping...\n");
         // do nothing
         return;
     }
 
     // don't compute force with self
     if (particle_equal(p, bht->body)) return;
-
-    /*
-    if (distance == 0.){
-        printf("Dividing by zero!\n");
-    }
-    */
 
     // if a node is sufficiently far away,
     distance = vec_dist(p.pos, bht->body.pos);
@@ -105,20 +96,10 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     // if a node is too close,
     if (s_over_d >= theta){
         // recurse!
-        //printf("I'm going in!\n");
-        //printf("%p\n", bht->SW);
-        //printf("%f\n", bht->SW->body.mass);
         if (bht->SW != NULL) bht_net_force(p, bht->SW, f);
-        //printf("%p\n", bht->NW);
-        //printf("%f\n", bht->NW->body.mass);
         if (bht->NW != NULL) bht_net_force(p, bht->NW, f);
-        //printf("%p\n", bht->NE);
-        //printf("%f\n", bht->NE->body.mass);
         if (bht->NE != NULL) bht_net_force(p, bht->NE, f);
-        //printf("%p\n", bht->SE);
-        //printf("%f\n", bht->SE->body.mass);
         if (bht->SE != NULL) bht_net_force(p, bht->SE, f);
-        //printf("Done recursing!\n");
     }
 }
 
@@ -190,17 +171,13 @@ int main(){
         //BHTree* bht = malloc( sizeof(bht) );
         //bhtree_print(bht);
         
-        //bhtree_print(bht);
 
         //bhtree_print(*bht);
         
         //printf("Adding particles to BHT\n");
         build_bht(particles, bht);
-        //printf("BHT mass: %f\n", bht->body.mass);
 
-        //printf("Built BH tree!\n");
-
-        //bhtree_print(*bht);
+        printf("%f\n", bht->body.mass);
 
         /* advance the positions */
         int j;
@@ -234,6 +211,9 @@ int main(){
         t += dT;
         i ++;
         //printf("Done with step.\n");
+
+        // clear the BH tree
+        free(bht);
     }
     return 0;
 }
