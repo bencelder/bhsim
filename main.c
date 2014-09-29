@@ -77,15 +77,13 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
 
     // if node doesn't contain a body,
     if (bht->body.mass == 0.){
-        printf("Unitialized! Skipping...\n");
+        //printf("Unitialized! Skipping...\n");
         // do nothing
         return;
     }
 
     // don't compute force with self
     if (particle_equal(p, bht->body)) return;
-
-    
 
     /*
     if (distance == 0.){
@@ -97,7 +95,7 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     distance = vec_dist(p.pos, bht->body.pos);
     s_over_d = bht->quad.length / distance;
     if (s_over_d < theta){
-        printf("Approximating!\n");
+        //printf("Approximating!\n");
         // approximate all particles in the node as
         // a point particle
         force(p, bht->body, temp);
@@ -107,20 +105,20 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     // if a node is too close,
     if (s_over_d >= theta){
         // recurse!
-        printf("I'm going in!\n");
-        printf("%p\n", bht->SW);
-        printf("%f\n", bht->SW->body.mass);
-        bht_net_force(p, bht->SW, f);
-        printf("%p\n", bht->NW);
-        printf("%f\n", bht->NW->body.mass);
-        bht_net_force(p, bht->NW, f);
-        printf("%p\n", bht->NE);
-        printf("%f\n", bht->NE->body.mass);
-        bht_net_force(p, bht->NE, f);
-        printf("%p\n", bht->SE);
-        printf("%f\n", bht->SE->body.mass);
-        bht_net_force(p, bht->SE, f);
-        printf("Done recursing!\n");
+        //printf("I'm going in!\n");
+        //printf("%p\n", bht->SW);
+        //printf("%f\n", bht->SW->body.mass);
+        if (bht->SW != NULL) bht_net_force(p, bht->SW, f);
+        //printf("%p\n", bht->NW);
+        //printf("%f\n", bht->NW->body.mass);
+        if (bht->NW != NULL) bht_net_force(p, bht->NW, f);
+        //printf("%p\n", bht->NE);
+        //printf("%f\n", bht->NE->body.mass);
+        if (bht->NE != NULL) bht_net_force(p, bht->NE, f);
+        //printf("%p\n", bht->SE);
+        //printf("%f\n", bht->SE->body.mass);
+        if (bht->SE != NULL) bht_net_force(p, bht->SE, f);
+        //printf("Done recursing!\n");
     }
 }
 
@@ -164,17 +162,16 @@ int main(){
     double t = 0;
 
 
-    /*
-    BHTree bht;
+    BHTree* bht;
     Quad anchor;
     double anchor_coords[] = {-1., -1.};
     anchor = quad_init(2., anchor_coords, anchor);
 
     bht = bhtree_new( anchor );
-    bhtree_print( bht );
-    */
 
-    /*
+    //printf("Created new BHT\n");
+    //bhtree_print( bht );
+
     particles[0].pos[0] = -0.5;
     particles[0].pos[1] = -0.5;
 
@@ -183,7 +180,6 @@ int main(){
 
     particles[2].pos[0] =  0.5;
     particles[2].pos[1] =  0.5;
-    */
 
     while (t < T){
 
@@ -195,13 +191,16 @@ int main(){
         //bhtree_print(bht);
         
         //bhtree_print(bht);
-        /*
-        printf("Adding particles to BHT\n");
-        build_bht(particles, &bht);
-        printf("BHT mass: %f\n", bht.body.mass);
-        //bhtree_print(bht);
-        printf("Built BH tree!\n");
-        */
+
+        //bhtree_print(*bht);
+        
+        //printf("Adding particles to BHT\n");
+        build_bht(particles, bht);
+        //printf("BHT mass: %f\n", bht->body.mass);
+
+        //printf("Built BH tree!\n");
+
+        //bhtree_print(*bht);
 
         /* advance the positions */
         int j;
@@ -214,8 +213,8 @@ int main(){
         /* update the velocities */
         for (j = 0; j < N_part; j++){
             double f[] = {0., 0.};
-            brute_net_force(particles[j], particles, f);
-            //bht_net_force(particles[j], &bht, f);
+            //brute_net_force(particles[j], particles, f);
+            bht_net_force(particles[j], bht, f);
             vec_mult(dT, f, temp);
             vec_add(particles[j].vel, temp, particles[j].vel);
         }

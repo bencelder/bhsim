@@ -1,3 +1,5 @@
+#include<stdlib.h>
+
 #include "bhtree.h"
 #include "vec.h"
 
@@ -101,27 +103,30 @@ Particle particle_add(Particle p1, Particle p2){
 }
 
 void bhtree_print(BHTree bht){
-    printf("Particle in BHT:\n");
+    //printf("Particle in BHT:\n");
     particle_print( bht.body );
+
     printf("SW %p\n", bht.SW);
+    if (bht.SW != NULL) bhtree_print(*(bht.SW));
     printf("NW %p\n", bht.NW);
+    if (bht.NW != NULL) bhtree_print(*(bht.NW));
     printf("NE %p\n", bht.NE);
+    if (bht.NE != NULL) bhtree_print(*(bht.NE));
     printf("SE %p\n", bht.SE);
-    //printf("Quad in BHT:\n");
-    //quad_print( bht.quad );
-    // print children?
+    if (bht.SE != NULL) bhtree_print(*(bht.SE));
 }
 
-BHTree bhtree_new(Quad q){
-    BHTree bht;
+BHTree* bhtree_new(Quad q){
+    BHTree* bht;
+    bht = malloc( sizeof( BHTree ) );
     //bht = malloc( sizeof(bht) );
-    bht.quad = q;
-    bht.body.mass = 0.;
-    bht.is_leaf = true;
-    bht.SW = NULL;
-    bht.NW = NULL;
-    bht.NE = NULL;
-    bht.SE = NULL;
+    bht->quad = q;
+    bht->body.mass = 0.;
+    bht->is_leaf = true;
+    bht->SW = NULL;
+    bht->NW = NULL;
+    bht->NE = NULL;
+    bht->SE = NULL;
     return bht;
 }
 
@@ -165,14 +170,20 @@ void bhtree_insert(Particle p, BHTree* bht){
         // correct one(s).
 
         // initialize the four quadrants
-        BHTree SW = bhtree_new( quad_SW( bht->quad ) );
-        bht->SW = &SW;
-        BHTree NW = bhtree_new( quad_NW( bht->quad ) );
-        bht->NW = &NW;
-        BHTree NE = bhtree_new( quad_NE( bht->quad ) );
-        bht->NE = &NE;
-        BHTree SE = bhtree_new( quad_SE( bht->quad ) );
-        bht->SE = &SE;
+        //BHTree* SW = malloc( sizeof( BHTree ) );
+        //bht->SW = SW;
+        //BHTree SW = bhtree_new( quad_SW( bht->quad ) );
+        //bht->SW = &SW;
+        //BHTree NW = bhtree_new( quad_NW( bht->quad ) );
+        bht->SW = bhtree_new( quad_SW( bht->quad ) );
+        bht->NW = bhtree_new( quad_NW( bht->quad ) );
+        bht->NE = bhtree_new( quad_NE( bht->quad ) );
+        bht->SE = bhtree_new( quad_SE( bht->quad ) );
+        //bht->NW = &NW;
+        //BHTree NE = bhtree_new( quad_NE( bht->quad ) );
+        //bht->NE = &NE;
+        //BHTree SE = bhtree_new( quad_SE( bht->quad ) );
+        //bht->SE = &SE;
 
         // put the two particles into the correct node(s)
         bhtree_put_into_correct_quad(p, bht);

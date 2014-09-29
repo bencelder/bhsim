@@ -41,5 +41,5 @@ Particle particle_add(Particle p1, Particle p2);
 
 void bhtree_print(BHTree);
 // New BH-Tree with no bodies, representing the quadrant.
-BHTree bhtree_new(Quad q);
+BHTree* bhtree_new(Quad q);
 void bhtree_insert(Particle p, BHTree* bht);
