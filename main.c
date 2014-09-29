@@ -173,11 +173,12 @@ int main(){
         
 
         //bhtree_print(*bht);
+        bht = bhtree_new( anchor );
         
         //printf("Adding particles to BHT\n");
         build_bht(particles, bht);
 
-        printf("%f\n", bht->body.mass);
+        //printf("%f\n", bht->body.mass);
 
         /* advance the positions */
         int j;
@@ -200,7 +201,7 @@ int main(){
         if (steps_since_frame >= steps_per_frame){
             char savename[256];
             sprintf(savename, "data/%05d.dat", ss_count);
-            //printf("%s\n", savename);
+            printf("%s\n", savename);
             write_particles(particles, savename);
 
             ss_count++;
@@ -213,7 +214,7 @@ int main(){
         //printf("Done with step.\n");
 
         // clear the BH tree
-        free(bht);
+        //free(bht);
     }
     return 0;
 }
