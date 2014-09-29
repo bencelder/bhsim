@@ -36,7 +36,6 @@ void init_particles(Particle* particles){
 }
 
 void write_particles(Particle* particles, char* fname){
-    //Particle p;
     int i;
     FILE* fp;
     fp = fopen(fname, "w+");
@@ -68,22 +67,62 @@ void build_bht(Particle* particles, BHTree* bht){
     }
 }
 
-/*
-double* bht_net_force(Particle p, BHTree* bht){
-    double f[] = {0., 0.};
+void bht_net_force(Particle p, BHTree* bht, double* f){
     double theta = 0.5;
     double s_over_d;
     double distance;
+    double temp[] = {0., 0.};
 
-    // if node hasn't been initialized, return a blank force
-    printf("%f\n", bht->body.mass);
-    // idea for speedup: use the square of the distance instead
-    //distance = vec_distance(p.pos, bht->body
-    // if the node is far away
+    //vec_print(p.pos);
+
+    // if node doesn't contain a body,
+    if (bht->body.mass == 0.){
+        printf("Unitialized! Skipping...\n");
+        // do nothing
+        return;
+    }
+
+    // don't compute force with self
+    if (particle_equal(p, bht->body)) return;
+
     
-    return f;
+
+    /*
+    if (distance == 0.){
+        printf("Dividing by zero!\n");
+    }
+    */
+
+    // if a node is sufficiently far away,
+    distance = vec_dist(p.pos, bht->body.pos);
+    s_over_d = bht->quad.length / distance;
+    if (s_over_d < theta){
+        printf("Approximating!\n");
+        // approximate all particles in the node as
+        // a point particle
+        force(p, bht->body, temp);
+        vec_add(f, temp, f);
+        return;
+    }
+    // if a node is too close,
+    if (s_over_d >= theta){
+        // recurse!
+        printf("I'm going in!\n");
+        printf("%p\n", bht->SW);
+        printf("%f\n", bht->SW->body.mass);
+        bht_net_force(p, bht->SW, f);
+        printf("%p\n", bht->NW);
+        printf("%f\n", bht->NW->body.mass);
+        bht_net_force(p, bht->NW, f);
+        printf("%p\n", bht->NE);
+        printf("%f\n", bht->NE->body.mass);
+        bht_net_force(p, bht->NE, f);
+        printf("%p\n", bht->SE);
+        printf("%f\n", bht->SE->body.mass);
+        bht_net_force(p, bht->SE, f);
+        printf("Done recursing!\n");
+    }
 }
-*/
 
 void brute_net_force(Particle p, Particle* particles, double* f){
     int k;
@@ -91,6 +130,7 @@ void brute_net_force(Particle p, Particle* particles, double* f){
     for (k = 0; k < N_part; k++){
         // don't compute self-force
         if (particle_equal(p, particles[k])) continue;
+        //printf("%f\n", vec_dist(p.pos, particles[k].pos));
 
         // get the force between these 2 particles
         force(p, particles[k], temp);
@@ -122,15 +162,46 @@ int main(){
     int ss_count = 0;
     int steps_since_frame = steps_per_frame;
     double t = 0;
+
+
+    /*
+    BHTree bht;
+    Quad anchor;
+    double anchor_coords[] = {-1., -1.};
+    anchor = quad_init(2., anchor_coords, anchor);
+
+    bht = bhtree_new( anchor );
+    bhtree_print( bht );
+    */
+
+    /*
+    particles[0].pos[0] = -0.5;
+    particles[0].pos[1] = -0.5;
+
+    particles[1].pos[0] =  0.5;
+    particles[1].pos[1] = -0.5;
+
+    particles[2].pos[0] =  0.5;
+    particles[2].pos[1] =  0.5;
+    */
+
     while (t < T){
 
         // build the Barnes-Hut tree
-        Quad anchor;
-        double anchor_coords[] = {-1., -1.};
-        anchor = quad_init(2., anchor_coords, anchor);
 
-        BHTree bht = bhtree_new( anchor );
+        //bht = bhtree_new( anchor );
+        //printf("BHT mass: %f\n", bht.body.mass);
+        //BHTree* bht = malloc( sizeof(bht) );
+        //bhtree_print(bht);
+        
+        //bhtree_print(bht);
+        /*
+        printf("Adding particles to BHT\n");
         build_bht(particles, &bht);
+        printf("BHT mass: %f\n", bht.body.mass);
+        //bhtree_print(bht);
+        printf("Built BH tree!\n");
+        */
 
         /* advance the positions */
         int j;
@@ -149,7 +220,6 @@ int main(){
             vec_add(particles[j].vel, temp, particles[j].vel);
         }
 
-
         /* write the output */
         if (steps_since_frame >= steps_per_frame){
             char savename[256];
@@ -164,6 +234,7 @@ int main(){
 
         t += dT;
         i ++;
+        //printf("Done with step.\n");
     }
     return 0;
 }

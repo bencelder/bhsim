@@ -5,7 +5,7 @@ CC = gcc
 #  Wall tells it to output warnings
 # -O3 optimizes
 #  -S outputs assembly code in .s files
-CFlags=-c -Wall -O3
+CFlags=-c -Wall
 
 # target: dependencies
 #

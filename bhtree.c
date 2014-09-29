@@ -103,6 +103,10 @@ Particle particle_add(Particle p1, Particle p2){
 void bhtree_print(BHTree bht){
     printf("Particle in BHT:\n");
     particle_print( bht.body );
+    printf("SW %p\n", bht.SW);
+    printf("NW %p\n", bht.NW);
+    printf("NE %p\n", bht.NE);
+    printf("SE %p\n", bht.SE);
     //printf("Quad in BHT:\n");
     //quad_print( bht.quad );
     // print children?
@@ -110,29 +114,28 @@ void bhtree_print(BHTree bht){
 
 BHTree bhtree_new(Quad q){
     BHTree bht;
+    //bht = malloc( sizeof(bht) );
     bht.quad = q;
     bht.body.mass = 0.;
     bht.is_leaf = true;
+    bht.SW = NULL;
+    bht.NW = NULL;
+    bht.NE = NULL;
+    bht.SE = NULL;
     return bht;
 }
 
 void bhtree_put_into_correct_quad(Particle p, BHTree* bht){
-    //Quad SW;
-    //SW = bht->SW->quad;
     if (quad_contains(p.pos, bht->SW->quad)){
-        //printf("SW!\n");
         bhtree_insert(p, bht->SW);
     }
     else if (quad_contains(p.pos, bht->NW->quad)){
-        //printf("NW!\n");
         bhtree_insert(p, bht->NW);
     }
     else if (quad_contains(p.pos, bht->NE->quad)){
-        //printf("NE!\n");
         bhtree_insert(p, bht->NE);
     }
     else if (quad_contains(p.pos, bht->SE->quad)){
-        //printf("SE!\n");
         bhtree_insert(p, bht->SE);
     }
 }
