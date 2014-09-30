@@ -5,6 +5,10 @@ N-body barnes-hut simulation
 
 To-do:
 
+Switch image output to 1280x720
+
+Upload to youtube in HD
+
 Write galaxy init tool
 
 Use Verlet integration
