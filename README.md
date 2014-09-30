@@ -5,6 +5,12 @@ N-body barnes-hut simulation
 
 To-do:
 
+Calculate correct scaling for G
+
+Set particles' opacity
+
+Expand simulation box size so particles don't leave
+
 Update with ETA
 
 Streamline getting output from noether

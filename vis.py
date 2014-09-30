@@ -42,6 +42,7 @@ def draw_frame(screen, particles):
         x, y = width*x/2 + width/2, height*y/2 + height/2
         pygame.gfxdraw.pixel(screen, 
                 int(x), int(y), white)
+    # not sure if this does anything in headless mode
     #pygame.display.flip()
 
 def load_snapshot(fname):
@@ -55,14 +56,18 @@ def load_snapshot(fname):
     return particles
 
 pygame.init()
-#pygame.display.set_caption(' ')
 size = width, height
-pygame.display.set_mode( (1, 1) )
+
+# visual options
+#pygame.display.set_caption(' ')
 #screen = pygame.display.set_mode(size, pygame.NOFRAME) 
 #screen = pygame.Surface( size )
+
+# headless options
+pygame.display.set_mode( (1, 1) )
 screen = pygame.Surface(size, pygame.SRCALPHA, 32)
 pygame.draw.rect(screen, (0,0,0), (0, 0, width, height), 0)
-#screen = pygame.Surface( size )
+
 background = pygame.Surface(screen.get_size())
 background.fill(black)
 
