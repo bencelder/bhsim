@@ -3,8 +3,12 @@ import pygame, pygame.gfxdraw
 
 #run_dir  = '../runs/run' + run + '/'
 #run_dir  = sys.argv[1]
-data_dir = 'data/'
 img_dir  = 'images/'
+
+if len(sys.argv) == 1:
+    data_dir = 'data/'
+else:
+    data_dir  = sys.argv[1]
 
 print data_dir
 print img_dir
@@ -48,7 +52,10 @@ def load_snapshot(fname):
 pygame.init()
 pygame.display.set_caption(' ')
 size = width, height
-screen = pygame.display.set_mode(size, pygame.NOFRAME) 
+#screen = pygame.display.set_mode(size, pygame.NOFRAME) 
+screen = pygame.display.set_mode( (1, 1) )
+#screen = pygame.Surface( size )
+screen = pygame.Surface( size )
 background = pygame.Surface(screen.get_size())
 background.fill(black)
 

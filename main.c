@@ -10,7 +10,8 @@
 #include "bhtree.h"
 
 
-double T  = 10.;
+//double T  = 10.;
+double T  = 30.;
 double dT = 0.01;
 int fps = 24;
 
@@ -30,6 +31,8 @@ void init_particles(Particle* particles){
         particles[i].pos[0] = r * cos(theta);
         particles[i].pos[1] = r * sin(theta);
         particles[i].mass   = 1.;
+        vec_orthog( particles[i].pos, particles[i].vel );
+        vec_mult(0.02, particles[i].vel, particles[i].vel);
         //particles[i].vel[0] = 0.1 * r * cos(theta);
         //particles[i].vel[1] = 0.1 * r * sin(theta);
     }
@@ -223,6 +226,9 @@ int main(){
 
         // clear the BH tree
         bhtree_free(bht);
+
+        // flush stdout (useful on nohup)
+        fflush(stdout);
     }
     return 0;
 }

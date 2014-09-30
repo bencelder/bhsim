@@ -7,7 +7,12 @@ This command takes images with 5 digit padding (image00001.png) and compresses t
 '''
 
 #run_dir = sys.argv[1]
-image_dir = 'images/'
+if len(sys.argv) == 1:
+    image_dir = 'images/'
+else:
+    image_dir = sys.argv[1]
+
+print image_dir
 
 fps = 24
 # this one has some problems with compression -- pixels drop out =(

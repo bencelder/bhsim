@@ -17,6 +17,9 @@ void vec_mult(double a, double* b, double* c);
 // c = | a - b |
 double vec_dist(double* a, double* b);
 
+// returns a unit vector b orthogonal to a
+void vec_orthog(double* a, double* b);
+
 
 void vec_print(double* a);
 void vec_write(double* a, FILE* fp);

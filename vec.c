@@ -32,6 +32,7 @@ double vec_norm(double* a){
     return sqrt(vec_dot(a, a));
 }
 
+
 void vec_copy(double* a, double* b){
     int i;
     for (i = 0; i < N_dim; i++){
@@ -65,4 +66,11 @@ void vec_write(double* a, FILE* fp){
     for (i = 0; i < N_dim; i++){
         fprintf(fp, "%f\t", a[i]);
     }
+}
+
+void vec_orthog(double* a, double* b){
+    double c = vec_norm(a);
+    b[0] =   a[1] / c;
+    b[1] = - a[0] / c;
+
 }
