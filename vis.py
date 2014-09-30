@@ -1,4 +1,9 @@
-import sys, pickle, os, glob
+import os
+
+# headless mode
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+
+import sys, pickle, glob
 import pygame, pygame.gfxdraw
 
 #run_dir  = '../runs/run' + run + '/'
@@ -50,7 +55,7 @@ def load_snapshot(fname):
     return particles
 
 pygame.init()
-pygame.display.set_caption(' ')
+#pygame.display.set_caption(' ')
 size = width, height
 #screen = pygame.display.set_mode(size, pygame.NOFRAME) 
 screen = pygame.display.set_mode( (1, 1) )
