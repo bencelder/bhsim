@@ -11,10 +11,6 @@
 #include "bhtree.h"
 
 
-double T  = 10.;
-double dT = 0.01;
-int fps = 24;
-
 /* Returns a random double in the range [0, 1) */
 double rand_num(){
     int r = rand();
@@ -26,7 +22,7 @@ void init_particles(Particle* particles){
     double r, theta;
     int i;
     for (i = 0; i < N_part; i++){
-        r = 0.8 * rand_num();
+        r = 1.5 * 0.8 * rand_num();
         theta = 2 * M_PI * rand_num();
         particles[i].pos[0] = r * cos(theta);
         particles[i].pos[1] = r * sin(theta);
@@ -156,8 +152,9 @@ int main(){
 
     BHTree* bht;
     Quad anchor;
-    double anchor_coords[] = {-1., -1.};
-    anchor = quad_init(2., anchor_coords, anchor);
+    //double boxsize = 200.
+    double anchor_coords[] = {-boxsize/2., -boxsize/2.};
+    anchor = quad_init(boxsize, anchor_coords, anchor);
 
     bht = bhtree_new( anchor );
 
