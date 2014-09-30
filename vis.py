@@ -42,7 +42,7 @@ def draw_frame(screen, particles):
         x, y = width*x/2 + width/2, height*y/2 + height/2
         pygame.gfxdraw.pixel(screen, 
                 int(x), int(y), white)
-    pygame.display.flip()
+    #pygame.display.flip()
 
 def load_snapshot(fname):
     f = open(fname)
@@ -57,10 +57,12 @@ def load_snapshot(fname):
 pygame.init()
 #pygame.display.set_caption(' ')
 size = width, height
+pygame.display.set_mode( (1, 1) )
 #screen = pygame.display.set_mode(size, pygame.NOFRAME) 
-screen = pygame.display.set_mode( (1, 1) )
 #screen = pygame.Surface( size )
-screen = pygame.Surface( size )
+screen = pygame.Surface(size, pygame.SRCALPHA, 32)
+pygame.draw.rect(screen, (0,0,0), (0, 0, width, height), 0)
+#screen = pygame.Surface( size )
 background = pygame.Surface(screen.get_size())
 background.fill(black)
 
