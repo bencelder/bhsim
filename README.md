@@ -5,13 +5,22 @@ N-body barnes-hut simulation
 
 To-do:
 
+Update with ETA
+
+Streamline getting output from noether
+
+Parallelize simulation
+
+Parallelize vis.py
+
 Color pixels based on the particles' velocity
 
 Vector functions vs macros
 
-Make images w/o pygame screen
+x Make images w/o pygame screen
 
-Get data or videos from noether to laptop
+
+x Get data or videos from noether to laptop
 
 x Brute force -> Barnes-Hut
 
