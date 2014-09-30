@@ -1,5 +1,8 @@
 # specify which compiler
+# ubuntu 4.9: gcc-4.9
 CC = gcc
+#CC = gcc-4.9
+#CC = /usr/local/bin/gcc
 
 # -c tells it not to link
 #  Wall tells it to output warnings
@@ -15,10 +18,10 @@ CFlags=-c -Wall -O3
 # the -lm tells it explicitly to link the math library
 # (needed on ubuntu)
 sim: main.o vec.o bhtree.o
-	$(CC) main.o vec.o bhtree.o -o sim -lm
+	$(CC) main.o vec.o bhtree.o -o sim -lm -fopenmp
 
 main.o: main.c params.h bhtree.h main.h
-	$(CC) $(CFlags) main.c
+	$(CC) $(CFlags) main.c -fopenmp
 
 vec.o: vec.c params.h
 	$(CC) $(CFlags) vec.c

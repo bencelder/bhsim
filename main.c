@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<limits.h>
 #include<math.h>
+#include<omp.h>
 
 #include "params.h"
 #include "main.h"
@@ -199,6 +200,7 @@ int main(){
         }
 
         /* update the velocities */
+        #pragma omp parallel for private(j, temp)
         for (j = 0; j < N_part; j++){
             double f[] = {0., 0.};
             //brute_net_force(particles[j], particles, f);
