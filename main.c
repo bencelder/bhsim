@@ -11,7 +11,7 @@
 
 
 //double T  = 10.;
-double T  = 30.;
+double T  = 10.;
 double dT = 0.01;
 int fps = 24;
 
