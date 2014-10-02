@@ -1,6 +1,6 @@
-long N_part = 10000; /* 10 GB / 32 bytes ~ 3e8 particles */
+long N_part = 1000; /* 10 GB / 32 bytes ~ 3e8 particles */
 
-double T  = 30.;
+double T  = 10.;
 double dT = 0.01;
 int fps = 24;
 

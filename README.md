@@ -5,6 +5,14 @@ N-body barnes-hut simulation
 
 To-do:
 
+Be able to start from a frame
+
+Put a black hole in the center of the galaxy
+
+Optimize timestep
+
+Check smoothing term in force
+
 Improve how videos look on youtube
 
 Write galaxy init tool
@@ -15,8 +23,6 @@ Calculate correct scaling for G
 
 Set particles' opacity
 
-Output ETA
-
 Streamline getting output from noether
 
 Parallelize simulation
@@ -26,6 +32,8 @@ Parallelize vis.py
 Color pixels based on the particles' velocity
 
 Vector functions vs macros
+
+x Output ETA
 
 x Upload to youtube in HD
 

@@ -26,7 +26,7 @@ n_snapshots = len(files)
 print n_snapshots, "snapshots to convert."
 
 # delete the previous images
-os.system('rm images/*.png')
+#os.system('rm images/*.png')
 
 black = (0, 0, 0)
 #white = (255, 255, 255, 150)
@@ -40,7 +40,7 @@ def draw_frame(screen, particles):
     screen.blit(background, (0, 0))
     # draw particles
     for x,y in particles:
-        x, y = width*x/2 + width/2, width*y/2 + height/2
+        x, y = height*x/2 + width/2, height*y/2 + height/2
         pygame.gfxdraw.pixel(screen, 
                 int(x), int(y), white)
     # not sure if this does anything in headless mode

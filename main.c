@@ -124,12 +124,26 @@ void brute_net_force(Particle p, Particle* particles, double* f){
     }
 }
 
+void print_human_readable(int s){
+    printf("%f hours \t %f minutes \t %f seconds",
+            1., 1., 1.);
+}
+
 int main(){
     double seconds_per_frame = 1. / fps;
     int steps_per_frame = seconds_per_frame / dT;
 
+    bool* progress = malloc( sizeof(bool) * 100 );
+    int i = 0;
+    for (i = 0; i < 100; i++){
+        progress[i] = true;
+    }
+
+    int start_time, current_time;
+    start_time = time(NULL);
+    printf("%d\n", start_time);
+
     // init random number generator
-    //srand(1);
     srand(time(NULL));
     
     /* Initialize the particles */
@@ -143,50 +157,24 @@ int main(){
 
     init_particles(particles);
 
-    //write_particles(particles, "data/start.dat");
-    int i = 0;
     int ss_count = 0;
     int steps_since_frame = steps_per_frame;
     double t = 0;
 
-
+    // initialize the box used for the BH tree, and the
+    // tree itself
     BHTree* bht;
     Quad anchor;
-    //double boxsize = 200.
     double anchor_coords[] = {-boxsize/2., -boxsize/2.};
     anchor = quad_init(boxsize, anchor_coords, anchor);
 
     bht = bhtree_new( anchor );
 
-    //printf("Created new BHT\n");
-    //bhtree_print( bht );
-
-    particles[0].pos[0] = -0.5;
-    particles[0].pos[1] = -0.5;
-
-    particles[1].pos[0] =  0.5;
-    particles[1].pos[1] = -0.5;
-
-    particles[2].pos[0] =  0.5;
-    particles[2].pos[1] =  0.5;
-
     while (t < T){
 
         // build the Barnes-Hut tree
-
-        //bht = bhtree_new( anchor );
-        //printf("BHT mass: %f\n", bht.body.mass);
-        //BHTree* bht = malloc( sizeof(bht) );
-        //bhtree_print(bht);
-        
-
-        //bhtree_print(*bht);
         bht = bhtree_new( anchor );
-        
-        //printf("Adding particles to BHT\n");
         build_bht(particles, bht);
-
-        //printf("%f\n", bht->body.mass);
 
         /* advance the positions */
         int j;
@@ -210,7 +198,7 @@ int main(){
         if (steps_since_frame >= steps_per_frame){
             char savename[256];
             sprintf(savename, "data/%05d.dat", ss_count);
-            printf("%s\n", savename);
+            //printf("%s\n", savename);
             write_particles(particles, savename);
 
             ss_count++;
@@ -220,13 +208,23 @@ int main(){
 
         t += dT;
         i ++;
-        //printf("Done with step.\n");
 
         // clear the BH tree
         bhtree_free(bht);
 
         // flush stdout (useful on nohup)
         fflush(stdout);
+
+        int percent_done = (int) (100 * t/T);
+        if (progress[percent_done]){
+            printf("%d%% complete\t", percent_done);
+            progress[percent_done] = false;
+
+            current_time = time(NULL);
+            double time_elapsed = current_time - start_time;
+            double time_left = (100./percent_done - 1.) * time_elapsed;
+            printf("ETA: %d seconds\n", (int) time_left);
+        }
     }
     return 0;
 }

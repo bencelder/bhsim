@@ -10,3 +10,5 @@ sim
 *.png
 # and the movies
 *.mp4
+# and the nohup output
+*.out
