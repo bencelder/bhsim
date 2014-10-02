@@ -69,14 +69,10 @@ bool particle_in(Particle p, Quad q){
 }
 
 bool particle_equal(Particle p, Particle q){
-    if (p.mass == q.mass &&
-        p.pos[0] == q.pos[0] &&
-        p.pos[1] == q.pos[1]){
-        return true;
-    }
-    else{
-        return false;
-    }
+    if (p.mass   != q.mass)   return false;
+    if (p.pos[0] != q.pos[0]) return false;
+    if (p.pos[1] != q.pos[1]) return false;
+    return true;
 }
 
 void particle_print( Particle p ){

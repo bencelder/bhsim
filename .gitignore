@@ -12,3 +12,4 @@ sim
 *.mp4
 # and the nohup output
 *.out
+movies/
