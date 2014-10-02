@@ -5,6 +5,8 @@ N-body barnes-hut simulation
 
 To-do:
 
+Solar system initial conditions
+
 Be able to start from a frame
 
 Put a black hole in the center of the galaxy

@@ -13,3 +13,4 @@ sim
 # and the nohup output
 *.out
 movies/
+thoughts.txt

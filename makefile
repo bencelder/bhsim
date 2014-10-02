@@ -8,7 +8,8 @@ CC = gcc
 #  Wall tells it to output warnings
 # -O3 optimizes
 #  -S outputs assembly code in .s files
-CFlags=-c -Wall -O3 -pg
+#  add the -pg flag here too
+CFlags=-c -Wall -O3
 
 # target: dependencies
 #
@@ -20,7 +21,7 @@ CFlags=-c -Wall -O3 -pg
 # -pg profiles the code.  Compile, run, then
 #  gprof go -p
 sim: main.o vec.o bhtree.o
-	$(CC) main.o vec.o bhtree.o -o sim -lm -fopenmp -pg
+	$(CC) main.o vec.o bhtree.o -o sim -lm -fopenmp
 
 main.o: main.c params.h bhtree.h main.h
 	$(CC) $(CFlags) main.c -fopenmp

@@ -56,6 +56,7 @@ void force(Particle p1, Particle p2, double* f){
     double r_mag;
     vec_sub(p2.pos, p1.pos, r);
     r_mag = vec_norm(r);
+    if (r_mag == 0.) vec_copy(r, f);
     vec_mult(G * p1.mass * p2.mass / pow( r_mag + a, 3.), r, f);
 }
 
@@ -79,7 +80,7 @@ void bht_net_force(Particle p, BHTree* bht, double* f){
     }
 
     // don't compute force with self
-    if (particle_equal(p, bht->body)) return;
+    //if (particle_equal(p, bht->body)) return;
 
     // if a node is sufficiently far away,
     distance = vec_dist(p.pos, bht->body.pos);
@@ -179,6 +180,7 @@ int main(){
         /* advance the positions */
         int j;
         double temp[] = {0., 0.};
+        #pragma omp parallel for private(j, temp)
         for (j = 0; j < N_part; j++){
             vec_mult(dT, particles[j].vel, temp);
             vec_add(particles[j].pos, temp, particles[j].pos);
