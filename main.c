@@ -19,8 +19,15 @@ double rand_num(){
 }
 
 void init_particles(Particle* particles){
-    double r, theta;
     int i;
+    /*
+    for (i = 0; i < N_part; i++){
+        particles[i].pos[0] = -2. + 4*rand_num();
+        particles[i].pos[1] = -2. + 4*rand_num();
+        particles[i].mass   = 1.;
+    }
+    */
+    double r, theta;
     for (i = 0; i < N_part; i++){
         r = 1.5 * 0.8 * rand_num();
         theta = 2 * M_PI * rand_num();
@@ -32,6 +39,8 @@ void init_particles(Particle* particles){
         //particles[i].vel[0] = 0.1 * r * cos(theta);
         //particles[i].vel[1] = 0.1 * r * sin(theta);
     }
+    /*
+    */
 }
 
 void write_particles(Particle* particles, char* fname){
@@ -180,11 +189,30 @@ int main(){
         /* advance the positions */
         int j;
         double temp[] = {0., 0.};
-        #pragma omp parallel for private(j, temp)
+        //#pragma omp parallel for private(j, temp)
         for (j = 0; j < N_part; j++){
+
+            // save previous positions
+            if (particles[j].pos_last4!= NULL)
+                vec_copy(particles[j].pos_last4, particles[j].pos_last5);
+            if (particles[j].pos_last3!= NULL)
+                vec_copy(particles[j].pos_last3, particles[j].pos_last4);
+            if (particles[j].pos_last2!= NULL)
+                vec_copy(particles[j].pos_last2, particles[j].pos_last3);
+            if (particles[j].pos_last != NULL)
+                vec_copy(particles[j].pos_last, particles[j].pos_last2);
+            vec_copy(particles[j].pos, particles[j].pos_last);
+
+            // compute the new position
             vec_mult(dT, particles[j].vel, temp);
             vec_add(particles[j].pos, temp, particles[j].pos);
         }
+
+        double delta_t, delta_t_min, delta_t_max, delta_t_sum;
+        delta_t = 0.;
+        delta_t_min = 1.;
+        delta_t_max = 0.;
+        delta_t_sum = 0.;
 
         /* update the velocities */
         #pragma omp parallel for private(j, temp)
@@ -193,7 +221,46 @@ int main(){
             //brute_net_force(particles[j], particles, f);
             bht_net_force(particles[j], bht, f);
             vec_mult(dT, f, temp);
+
             vec_add(particles[j].vel, temp, particles[j].vel);
+
+            // delta t calculation
+            double fourth_deriv[] = {0., 0.};
+            /* // 1st order
+            fourth_deriv[0] =
+                (particles[j].pos[0] - 4. * particles[j].pos_last[0] +
+                6. * particles[j].pos_last2[0] - 4. * particles[j].pos_last3[0] +
+                particles[j].pos_last4[0]) / (dT*dT*dT*dT);
+            fourth_deriv[1] =
+                (particles[j].pos[1] - 4. * particles[j].pos_last[1] +
+                6. * particles[j].pos_last2[1] - 4. * particles[j].pos_last3[1] +
+                particles[j].pos_last4[1]) / (dT*dT*dT*dT);
+            */  // 2nd order
+            fourth_deriv[0] =
+                (  3. * particles[j].pos[0]
+                - 14. * particles[j].pos_last[0]
+                + 26. * particles[j].pos_last2[0]
+                - 24. * particles[j].pos_last3[0]
+                + 11. * particles[j].pos_last4[0]
+                -  2. * particles[j].pos_last5[0]) / (dT*dT*dT*dT);
+            fourth_deriv[1] =
+                (  3. * particles[j].pos[1]
+                - 14. * particles[j].pos_last[1]
+                + 26. * particles[j].pos_last2[1]
+                - 24. * particles[j].pos_last3[1]
+                + 11. * particles[j].pos_last4[1]
+                -  2. * particles[j].pos_last5[1]) / (dT*dT*dT*dT);
+
+            delta_t = sqrt( vec_norm(f) / (particles[j].mass * vec_norm( fourth_deriv )) );
+
+            // for Euler steps
+            double alpha = 0.1;
+            delta_t = alpha * particles[j].mass
+                * vec_norm(particles[j].vel)
+                / vec_norm( f );
+            if (delta_t < delta_t_min) delta_t_min = delta_t;
+            if (delta_t > delta_t_max) delta_t_max = delta_t;
+            delta_t_sum += delta_t;
         }
 
         /* write the output */
@@ -226,6 +293,8 @@ int main(){
             double time_elapsed = current_time - start_time;
             double time_left = (100./percent_done - 1.) * time_elapsed;
             printf("ETA: %d seconds\n", (int) time_left);
+            printf("min: %f \t max: %f \t avg: %f \n",
+                    delta_t_min, delta_t_max, delta_t_sum / N_part);
         }
     }
     return 0;

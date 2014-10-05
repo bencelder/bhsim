@@ -4,6 +4,14 @@ typedef struct{
     double pos[2];
     double vel[2];
     double mass;
+
+    // past positions
+    double pos_last[2];
+    double pos_last2[2];
+    double pos_last3[2];
+    double pos_last4[2];
+    double pos_last5[2];
+    double pos_last6[2];
 }Particle;
 
 typedef struct{

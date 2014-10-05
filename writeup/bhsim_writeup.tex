@@ -1,0 +1,217 @@
+\documentclass[11pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{verbatim}
+\def\tcb{\textcolor{blue}}
+\def\tcr{\textcolor{red}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt}
+\usepackage{dsfont}
+\usepackage[numbers,sort&compress]{natbib}
+
+\topmargin      -0.3in  % distance to headers
+\headheight      0.2in  % height of header box
+\headsep         0.3in  % distance to top line
+\textheight      8.9in  % height of text
+\footskip        0.3in  % distance from bottom line
+\oddsidemargin   0.0in  % Horizontal alignment
+\evensidemargin  0.0in  % Horizontal alignment
+\textwidth       6.5in  % Horizontal alignment
+
+\newcommand{\Comment}[1]{{}}
+\definecolor{darkblue}{rgb}{0.15,0.35,0.55}
+\definecolor{orangeish}{rgb}{0.65, 0.2, 0.2}
+\usepackage[linktocpage=true]{hyperref}
+\hypersetup{
+colorlinks=true,
+citecolor=darkblue,
+linkcolor=orangeish,
+urlcolor=darkblue,
+pdfauthor={},
+pdftitle={},
+pdfsubject={hep-th}
+}
+
+\setcounter{tocdepth}{2}
+
+
+
+\linespread{1.1}
+
+\flushbottom
+
+
+\DeclareFontFamily{OT1}{rsfs10}{}
+\DeclareFontShape{OT1}{rsfs10}{m}{n}{ <-> rsfs10 }{}
+\DeclareMathAlphabet{\mathscript}{OT1}{rsfs10}{m}{n}
+
+%\numberwithin{equation}{section}
+
+
+
+\def\gsim{ \lower .75ex \hbox{$\sim$} \llap{\raise .27ex \hbox{$>$}} }
+\def\lsim{ \lower .75ex \hbox{$\sim$} \llap{\raise .27ex \hbox{$<$}} }
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\def\eea{\end{eqnarray}}
+
+\newcommand{\cp}[1]{{\mathbb C}{\mathbb P}^{#1}}
+\newcommand{\mbf}[1]{\mathbf{#1}}
+\newcommand{\cohclass}[1]{\left[{#1}\right]}
+\newcommand{\rest}[1]{\left.{#1}\right|}
+\newcommand{\half}{\frac{1}{2}}
+
+%\newcommand{\nn}{\nonumber}
+\newcommand{\ns}{\normalsize}
+
+\newcommand{\nn}{\cal{N}}
+\newcommand{\norm}{\frac{1}{\sqrt{\nn}}}
+\newcommand{\comb}{(1-\epsilon-\epsilon_s)}
+\newcommand{\combtwo}{(1+\epsilon)}
+\newcommand{\tA}{\tilde A}
+\newcommand{\es}{\epsilon_s}
+\newcommand{\kk}{{\bf k}}
+\newcommand{\vp}{\varphi}
+
+
+\newcommand{\tr}{\text{tr}}
+\newcommand{\pt}{\partial}
+\newcommand{\w}{\wedge}
+\newcommand{\Ds}{\not\!\!D}
+
+\newcommand{\HdR}{H_{\text{DR}}}
+
+\newcommand{\CC}{{\mathbf{C}}}
+\newcommand{\ZZ}{{\mathbf{Z}}}
+\newcommand{\RR}{{\mathbf{R}}}
+\newcommand{\PP}{{\mathbf{P}}}
+\newcommand{\bN}{{\mathbf N}}
+\newcommand{\bV}{{\mathbf V}}
+\newcommand{\bX}{{\mathbf X}}
+\newcommand{\bY}{{\matbbf Y}}
+\newcommand{\bZ}{{\mathbf Z}}
+\newcommand{\rd}{{\rm d}}
+\newcommand{\rmd}{{\rm d}}
+\renewcommand\({\left(}
+\renewcommand\){\right)}
+\renewcommand\[{\left[}
+\renewcommand\]{\right]}
+
+\newcommand{\lagr}{ {\cal L} }
+
+
+
+
+%\renewcommand{\abstractname}{\sc{Abstract}}
+
+\usepackage{latexsym,amsmath,amssymb,epsfig}
+
+\topmargin      -0.3in  % distance to headers
+\headheight      0.2in  % height of header box
+\headsep         0.3in  % distance to top line
+\textheight      8.9in  % height of text
+\footskip        0.3in  % distance from bottom line
+\oddsidemargin   0.0in  % Horizontal alignment
+\evensidemargin  0.0in  % Horizontal alignment
+\textwidth       6.5in  % Horizontal alignment
+
+\usepackage{graphicx}
+\usepackage{graphicx,subfigure}
+\usepackage{epstopdf}
+\usepackage[body={17.5cm, 21cm},right=2cm]{geometry}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{bbold}
+% \usepackage{showkeys}
+\usepackage{psfrag}
+\usepackage{epsfig}
+\usepackage{cancel}
+ \allowdisplaybreaks[4]
+
+%\usepackage{pstricks}
+%\usepackage{color}
+%\usepackage{axodraw2}
+\usepackage[all]{xy}
+\usepackage{feynmf}
+
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+
+
+\title{\bf\Huge N-Body Simulations}
+\author{}
+\date{}
+%
+\begin{document}
+\maketitle
+%\begin{abstract}
+%Notes on the CMB at large angular scales.
+%\end{abstract}
+
+%\tableofcontents
+
+\section{Integration methods}
+To advance the particles, we 
+\be
+\vec x( t + \Delta t ) = \vec x(t) + \dot{ \vec x}(t) \Delta t + \frac{1}{2}\ddot{ \vec x}(t) \Delta t^2
+ +  \frac{1}{6}\dddot{ \vec x}(t) \Delta t^3  +  \frac{1}{24}\ddddot{ \vec x}(t) \Delta t^4 + ...
+ \label{taylorexp}
+\ee
+
+Truncating this series after the first two terms is known as the Euler method:
+\be
+\vec x( t + \Delta t ) = \vec x(t) + \vec v(t) \Delta t 
+\ee
+where we also have to update the velocities after each step as well:
+\begin{align} \nonumber
+\vec v( t + \Delta t ) &= \vec v(t) + \vec a(t) \Delta t  \\
+&= \vec v(t) + \frac{ \vec F(t)}{m} \Delta t ~.
+\end{align}
+
+In order for this to be a good approximation, we need the higher order terms to be small.  If $\ddot{ \vec x }$ is continuous, then for some $\zeta \in [t, t + \Delta t]$ we have 
+\be
+\vec x( t + \Delta t ) = \vec x(t) + \dot{ \vec x}(t) \Delta t + \frac{1}{2}\ddot{ \vec x}(\zeta) \Delta t^2 ~.
+\ee
+This last term is the amount of error that Euler's method accumulates in a single step.  For the simulation to be accurate, we want this error term to be small compared to the previous one:
+\begin{align}
+ \frac{1}{2}\ddot{ \vec x}(\zeta) \Delta t^2 \ll \dot{ \vec x}(t) \Delta t \\
+ \Rightarrow \Delta t = \alpha \frac{ m v(t)}{F(t)}
+\end{align}
+where we have approximated $a(\zeta) = \frac{F(t)}{m}$, and $\alpha$ is an accuracy parameter, no larger than about $\frac{1}{5}$.
+
+There are many methods to do better than Euler's method.  One particularly simple (and clever) one is based on the {\it reversed} Taylor expansion:
+\be
+\vec x( t - \Delta t ) = \vec x(t) - \dot{ \vec x}(t) \Delta t + \frac{1}{2}\ddot{ \vec x}(t) \Delta t^2
+ -  \frac{1}{6}\dddot{ \vec x}(t) \Delta t^3  +  \frac{1}{24}\ddddot{ \vec x}(t) \Delta t^4 + ...
+\ee
+
+Notice that all the odd powers of $\Delta t$ have a negative sign out front.  If we add this to \ref{taylorexp}, the odd terms cancel and we get
+%
+\be
+\vec x( t + \Delta t ) = 2 \vec x(t) - \vec x( t - \Delta t )   +  \ddot{ \vec x}(t) \Delta t^2 +  \frac{1}{12}\ddddot{ \vec x}(t) \Delta t^4 + ...
+ \label{taylorexp}
+\ee
+%
+Keeping just the first three terms is known as the Verlet method:
+\be
+\vec x( t + \Delta t ) = 2 \vec x(t) - \vec x( t - \Delta t )   + \frac{\vec F(t)}{m} \Delta t^2~.
+ \label{Verlet}
+\ee
+This is particularly nice because it means we don't have to keep track of the velocity (though we do have to store the particles' last positions).  Notice also that it is $O(\Delta t^4)$!  For this to be accurate, we need
+\begin{align}
+\frac{1}{12}\ddddot{ x}(t) \Delta t^4 \ll \frac{ F(t)}{m} \Delta t^2 \\
+\Rightarrow \Delta t \approx \sqrt{ \frac{ F(t) }{m \ddddot{ x}(t)} }~.
+\end{align}
+
+
+%\begin{thebibliography}{99}
+
+%\end{thebibliography}
+
+
+\end{document}
