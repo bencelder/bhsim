@@ -209,13 +209,15 @@ int main(){
         }
 
         double delta_t, delta_t_min, delta_t_max, delta_t_sum;
+        double delta_t_sum_sq, delta_t_std_dev;
         delta_t = 0.;
         delta_t_min = 1.;
         delta_t_max = 0.;
         delta_t_sum = 0.;
+        delta_t_sum_sq  = 0.;
 
         /* update the velocities */
-        #pragma omp parallel for private(j, temp)
+        //#pragma omp parallel for private(j, temp)
         for (j = 0; j < N_part; j++){
             double f[] = {0., 0.};
             //brute_net_force(particles[j], particles, f);
@@ -260,7 +262,23 @@ int main(){
                 / vec_norm( f );
             if (delta_t < delta_t_min) delta_t_min = delta_t;
             if (delta_t > delta_t_max) delta_t_max = delta_t;
+
             delta_t_sum += delta_t;
+            delta_t_sum_sq  += delta_t * delta_t;
+
+
+            // Euler step comparison
+            /*
+            printf("%e \t %e\n",
+                    dT*vec_norm(particles[j].vel),
+                    dT*dT*vec_norm(f)/particles[j].mass/2.);
+
+            printf("%e \t %e\n",
+                    dT*dT*vec_norm(f)/particles[j].mass,
+                    dT*dT*dT*dT*vec_norm(fourth_deriv)/12.);
+
+            printf("\n");
+            */
         }
 
         /* write the output */
@@ -293,8 +311,19 @@ int main(){
             double time_elapsed = current_time - start_time;
             double time_left = (100./percent_done - 1.) * time_elapsed;
             printf("ETA: %d seconds\n", (int) time_left);
-            printf("min: %f \t max: %f \t avg: %f \n",
-                    delta_t_min, delta_t_max, delta_t_sum / N_part);
+
+            double delta_t_mean;
+
+            delta_t_mean = delta_t_sum / N_part;
+
+            delta_t_std_dev = sqrt(delta_t_sum_sq / N_part
+                    - delta_t_mean*delta_t_mean);
+
+            printf("mean: %f \t std dev: %f\n",
+                    delta_t_mean, delta_t_std_dev);
+
+            //printf("min: %f \t max: %f \t avg: %f \n",
+                    //delta_t_min, delta_t_max, delta_t_sum / N_part);
         }
     }
     return 0;
